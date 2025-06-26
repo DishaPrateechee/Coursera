@@ -1,0 +1,30 @@
+-- database.sql
+-- This table stores user information, including a unique ID, username, and email.
+-- UserID is an auto-incrementing primary key for unique identification.
+-- Username and Email fields are set to VARCHAR(100) to allow for a reasonable length
+-- and prevent excessively long inputs.
+CREATE TABLE Users (
+    UserID INT PRIMARY KEY AUTO_INCREMENT, -- Auto-incrementing primary key for user identification
+    Username VARCHAR(100) NOT NULL UNIQUE, -- Unique username for login purposes
+    Email VARCHAR(100) NOT NULL UNIQUE,    -- Unique email address
+    -- Added for authentication: Store hashed password
+    PasswordHash VARCHAR(255) NOT NULL -- Stores the hashed version of the user's password
+);
+
+-- Table for roles (if RBAC uses separate roles table)
+CREATE TABLE Roles (
+    RoleID INT PRIMARY KEY AUTO_INCREMENT,
+    RoleName VARCHAR(50) NOT NULL UNIQUE -- e.g., 'admin', 'user', 'moderator'
+);
+
+-- Junction table for many-to-many relationship between Users and Roles
+CREATE TABLE UserRoles (
+    UserID INT NOT NULL,
+    RoleID INT NOT NULL,
+    PRIMARY KEY (UserID, RoleID),
+    FOREIGN KEY (UserID) REFERENCES Users(UserID),
+    FOREIGN KEY (RoleID) REFERENCES Roles(RoleID)
+);
+
+-- Insert some initial roles
+INSERT INTO Roles (RoleName) VALUES ('admin'), ('user');
